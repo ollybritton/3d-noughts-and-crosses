@@ -107,10 +107,8 @@ document.querySelectorAll(".box").forEach((elem) => {
     });
 });
 
-function minimax(player, initial, maxDepth = 3, depth = 0) {
-    // console.log(player, initial, depth);
-
-    if (depth >= maxDepth) {
+function minimax(player, max, depth = 4) {
+    if (depth == 0) {
         // We've run out time to evaluate options, so this state is indeterminate.
         return 0;
     }
@@ -125,7 +123,7 @@ function minimax(player, initial, maxDepth = 3, depth = 0) {
         }
     }
 
-    if (player == initial) {
+    if (max) {
         // This is the player we're optimising for. We want to give as high of a score as possible.
         let bestValue = -Infinity;
 
@@ -141,7 +139,7 @@ function minimax(player, initial, maxDepth = 3, depth = 0) {
 
                 bestValue = Math.max(
                     bestValue,
-                    minimax(flipPlayer(player), initial, maxDepth, depth + 1)
+                    minimax(player, false, depth - 1)
                 );
 
                 // Undo simulating putting a player's mark in this location.
@@ -150,7 +148,7 @@ function minimax(player, initial, maxDepth = 3, depth = 0) {
         }
 
         return bestValue;
-    } else if (player != initial) {
+    } else if (!max) {
         // This is the player we're competing against. We need to consider what they can do to harm our chances the most.
         let bestValue = +Infinity;
 
@@ -162,11 +160,11 @@ function minimax(player, initial, maxDepth = 3, depth = 0) {
                 }
 
                 // Simulate putting a player's mark in this location.
-                grids[gridIndex][position] = player;
+                grids[gridIndex][position] = flipPlayer(player);
 
                 bestValue = Math.min(
                     bestValue,
-                    minimax(flipPlayer(player), initial, maxDepth, depth + 1)
+                    minimax(player, true, depth - 1)
                 );
 
                 // Undo simulating putting a player's mark in this location.
@@ -180,100 +178,29 @@ function minimax(player, initial, maxDepth = 3, depth = 0) {
     }
 }
 
-function wikiMinmax(player, depth, max) {
-    if (depth == 0) {
-        return 0;
-    }
-
-    // Check for winnings. If this player wins, then return +100. If they lose, return -100.
-    let winner = checkWinner();
-    if (winner != false) {
-        return 100 + depth;
-        // if (winner[3] == player) {
-        // } else {
-        //     return -100 - depth;
-        // }
-    }
-
-    if (max) {
-        let value = -Infinity;
-
-        for (let gridIndex = 0; gridIndex < 3; gridIndex++) {
-            for (let position = 0; position < 9; position++) {
-                // We can't put squares in locations that already exist.
-                if (grids[gridIndex][position] != null) {
-                    continue;
-                }
-
-                // Simulate putting a player's mark in this location.
-                grids[gridIndex][position] = player;
-
-                let winner = checkWinner();
-                if (winner != false) {
-                    value = Math.max(100 - depth, value);
-                } else {
-                    value = Math.max(
-                        value,
-                        wikiMinmax(flipPlayer(player), depth - 1, true)
-                    );
-                }
-
-                // Undo simulating putting a player's mark in this location.
-                grids[gridIndex][position] = null;
-            }
-        }
-
-        return value;
-    } else {
-        let value = +Infinity;
-
-        for (let gridIndex = 0; gridIndex < 3; gridIndex++) {
-            for (let position = 0; position < 9; position++) {
-                // We can't put squares in locations that already exist.
-                if (grids[gridIndex][position] != null) {
-                    continue;
-                }
-
-                // Simulate putting a player's mark in this location.
-                grids[gridIndex][position] = player;
-
-                let winner = checkWinner();
-                if (winner != false) {
-                    value = Math.min(100 - depth, value);
-                } else {
-                    value = Math.min(
-                        value,
-                        wikiMinmax(flipPlayer(player), depth - 1, true)
-                    );
-                }
-
-                // Undo simulating putting a player's mark in this location.
-                grids[gridIndex][position] = null;
-            }
-        }
-
-        return value;
-    }
-}
-
-function bestMoveForPlayer(player, depth = 3) {
+function bestMoveForPlayer(player, depth = 4) {
     let bestValue = -Infinity;
     let bestMove = [];
-
+    
     for (let gridIndex = 0; gridIndex < 3; gridIndex++) {
         for (let position = 0; position < 9; position++) {
+            // We can't put squares in locations that already exist.
             if (grids[gridIndex][position] != null) {
                 continue;
             }
 
+            // Simulate putting a player's mark in this location.
             grids[gridIndex][position] = player;
-            let expectedValue = wikiMinmax(currentPlayer, depth, true);
 
-            if (expectedValue > bestValue) {
-                bestValue = expectedValue;
-                bestMove = [gridIndex, position];
+            // console.log('here')
+            let score = minimax(player, player == "O", depth - 1)
+            console.log([gridIndex, position], score)
+            if (bestValue < score) {
+                bestValue = score
+                bestMove = [gridIndex, position]
             }
 
+            // Undo simulating putting a player's mark in this location.
             grids[gridIndex][position] = null;
         }
     }
@@ -309,7 +236,7 @@ function playNextMove() {
             winner = currentPlayer;
         }
 
-        currentPlayer = currentPlayer == "X" ? "O" : "X";
+        currentPlayer = flipPlayer(currentPlayer);
     } else {
         alert("No best move found!");
     }
