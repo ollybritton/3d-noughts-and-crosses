@@ -13,8 +13,23 @@
     <h1>3D Noughts and Crosses</h1>
 
     <p>This is currently a work in progress, the AI makes some stupid mistakes.</p>
-    <button onClick="playNextMove()">Play next move</button>
-    <br />
+
+    <div>
+        <button id="button-play-next-move" onClick="playNextMove()">Play next move</button>
+        <button id="button-autoplay" onClick="toggleAutoplay()">Toggle autoplay</button>
+    </div>
+
+    <p id="autoplay-notification" hidden=true>The AI will now respond to your moves automatically.</p>
+
+    <div>
+        <input type="range" min="1" max="8" value="5" class="slider" id="slider-depth">
+        <ul>
+            <li>Depth limit: <span id="depth">5</span></li>
+            <li><i id="depth-word">Mediocre</i></li>
+        </ul>
+        <p id="computing-phrases" hidden=true><span id="computing-phrase"></span>: <i><span id="progress"></span>/27</i>
+        </p>
+    </div>
     <br />
 
     <table>
@@ -40,7 +55,7 @@
     </table>
 
     <br />
-    
+
     <table>
         <thead>
             <tr>
@@ -62,9 +77,9 @@
             </tr>
         </tbody>
     </table>
-    
+
     <br />
-    
+
     <table>
         <thead>
             <tr>
@@ -86,7 +101,7 @@
             </tr>
         </tbody>
     </table>
-    
+
 
 
     <script src="index.js"></script>

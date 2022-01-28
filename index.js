@@ -6,6 +6,26 @@ let grids = [
 
 let currentPlayer = "X";
 let winner = "";
+let autoplay = false;
+let sliderDepth = document.getElementById("slider-depth");
+
+let depthWords = [
+    "Really stupid", // 1
+    "Stupid", // 2
+    "A bit stupid", // 3
+    "Okay", // 4
+    "Mediocre", // 5
+    "Pretty good", // 6
+    "Spin-your-fans-good", // 7
+    "Supercomputer-required-good", // 8
+];
+
+let computingPhrases = [
+    "Crunching the numbers",
+    "Searching state-space",
+    "Simulating play",
+    "Hacking into the matrix",
+];
 
 const winningPositions = [
     [0, 1, 2],
@@ -99,6 +119,10 @@ function handleClick(elem) {
 
         currentPlayer = currentPlayer == "X" ? "O" : "X";
     }
+
+    if (autoplay) {
+        setTimeout(playNextMove, 20);
+    }
 }
 
 document.querySelectorAll(".box").forEach((elem) => {
@@ -159,7 +183,7 @@ function minimax(player, max, depth = 4) {
                     continue;
                 }
 
-                // Simulate putting a player's mark in this location.
+                // Simulate putting a the other player's mark in this location.
                 grids[gridIndex][position] = flipPlayer(player);
 
                 bestValue = Math.min(
@@ -178,10 +202,12 @@ function minimax(player, max, depth = 4) {
     }
 }
 
-function bestMoveForPlayer(player, depth = 4) {
+function bestMoveForPlayer(player, depth = 5) {
     let bestValue = -Infinity;
-    let bestMove = [];
-    
+    let bestMoves = [];
+
+    console.log("Finding best move for", player);
+
     for (let gridIndex = 0; gridIndex < 3; gridIndex++) {
         for (let position = 0; position < 9; position++) {
             // We can't put squares in locations that already exist.
@@ -192,24 +218,35 @@ function bestMoveForPlayer(player, depth = 4) {
             // Simulate putting a player's mark in this location.
             grids[gridIndex][position] = player;
 
-            // console.log('here')
-            let score = minimax(player, player == "O", depth - 1)
-            console.log([gridIndex, position], score)
+            let score = minimax(player, false, depth - 1);
+            console.log([gridIndex, position], score);
             if (bestValue < score) {
-                bestValue = score
-                bestMove = [gridIndex, position]
+                bestValue = score;
+                bestMoves = [[gridIndex, position]];
+            } else if (bestValue == score) {
+                bestMoves.push([gridIndex, position]);
             }
 
             // Undo simulating putting a player's mark in this location.
             grids[gridIndex][position] = null;
+
+            document.getElementById("progress").innerHTML =
+                gridIndex * 9 + position + 1;
         }
     }
 
-    return bestMove;
+    return bestMoves[Math.floor(Math.random() * bestMoves.length)];
 }
 
 function playNextMove() {
-    let bestMove = bestMoveForPlayer(currentPlayer);
+    document.getElementById("computing-phrases").hidden = false;
+
+    document.getElementById("computing-phrase").innerHTML =
+        computingPhrases[Math.floor(Math.random() * computingPhrases.length)];
+
+    let bestMove = bestMoveForPlayer(currentPlayer, sliderDepth.value);
+
+    // document.getElementById("computing-phrases").hidden = true;
 
     if (winner != "") {
         return;
@@ -241,3 +278,17 @@ function playNextMove() {
         alert("No best move found!");
     }
 }
+
+function toggleAutoplay() {
+    // document.getElementById("button-autoplay").setAttribute("disabled", true);
+    let autoplayNotification = document.getElementById("autoplay-notification");
+    autoplayNotification.hidden = !autoplayNotification.hidden;
+
+    autoplay = !autoplay;
+}
+
+sliderDepth.oninput = function () {
+    document.getElementById("depth").innerHTML = sliderDepth.value;
+    document.getElementById("depth-word").innerHTML =
+        depthWords[sliderDepth.value - 1];
+};
