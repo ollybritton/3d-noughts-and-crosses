@@ -131,7 +131,7 @@ document.querySelectorAll(".box").forEach((elem) => {
     });
 });
 
-function minimax(player, max, depth = 4) {
+function minimax(player, max, alpha, beta, depth = 4) {
     if (depth == 0) {
         // We've run out time to evaluate options, so this state is indeterminate.
         return 0;
@@ -163,11 +163,17 @@ function minimax(player, max, depth = 4) {
 
                 bestValue = Math.max(
                     bestValue,
-                    minimax(player, false, depth - 1)
+                    minimax(player, false, alpha, beta, depth - 1)
                 );
+
+                alpha = Math.max(alpha, bestValue);
 
                 // Undo simulating putting a player's mark in this location.
                 grids[gridIndex][position] = null;
+
+                if (bestValue >= beta) {
+                    return bestValue;
+                }
             }
         }
 
@@ -188,11 +194,17 @@ function minimax(player, max, depth = 4) {
 
                 bestValue = Math.min(
                     bestValue,
-                    minimax(player, true, depth - 1)
+                    minimax(player, true, alpha, beta, depth - 1)
                 );
+
+                beta = Math.min(beta, bestValue);
 
                 // Undo simulating putting a player's mark in this location.
                 grids[gridIndex][position] = null;
+
+                if (bestValue <= alpha) {
+                    return bestValue;
+                }
             }
         }
 
@@ -218,7 +230,7 @@ function bestMoveForPlayer(player, depth = 5) {
             // Simulate putting a player's mark in this location.
             grids[gridIndex][position] = player;
 
-            let score = minimax(player, false, depth - 1);
+            let score = minimax(player, false, -Infinity, Infinity, depth - 1);
             console.log([gridIndex, position], score);
             if (bestValue < score) {
                 bestValue = score;
