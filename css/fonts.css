@@ -1,0 +1,67 @@
+@font-face {
+  font-family: "Baskervville";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(../fonts/Baskervville-Italic.ttf) format("woff2");
+}
+
+@font-face {
+  font-family: "Baskervville";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(../fonts/Baskervville-Regular.ttf) format("woff2");
+}
+
+@font-face {
+  font-family: "Baskervville";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(../fonts/Baskervville-Italic.ttf) format("woff2");
+}
+
+@font-face {
+  font-family: "Baskervville";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(../fonts/Baskervville-Regular.ttf) format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: normal;
+  font-display: swap;
+  src: url(../fonts/OpenSans-Regular.ttf) format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: italic;
+  font-weight: 400;
+  font-stretch: normal;
+  font-display: swap;
+  src: url(../fonts/OpenSans-Italic.ttf) format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 300;
+  font-stretch: normal;
+  font-display: swap;
+  src: url(../fonts/OpenSans-Light.ttf) format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: italic;
+  font-weight: 300;
+  font-stretch: normal;
+  font-display: swap;
+  src: url(../fonts/OpenSans-LightItalic.ttf) format("woff2");
+}
