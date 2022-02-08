@@ -23,6 +23,14 @@ let currentPlayer = "X";
 // The winning player.
 let winner = false;
 
+// The depth limit.
+let options = {
+    depthLimit: 6,
+    automaticallyRespond: true,
+    alphaBetaPruning: true,
+    heatmap: false,
+}
+
 // Per-grid indicies that make a win when one player has all of them.
 const winningPositions = [
     [0, 1, 2],
@@ -191,6 +199,149 @@ function checkWinner() {
     return false;
 }
 
+
+function minimax(player, max, alpha, beta, depth = 4) {
+    if (depth == 0) {
+        // We've run out time to evaluate options, so this state is indeterminate.
+        return 0;
+    }
+
+    // Check for winnings. If this player wins, then return +100. If they lose, return -100.
+    let winner = checkWinner();
+    if (winner != false) {
+        if (winner[3] == player) {
+            return 100 + depth;
+        } else {
+            return -100 - depth;
+        }
+    }
+
+    if (max) {
+        // This is the player we're optimising for. We want to give as high of a score as possible.
+        let bestValue = -Infinity;
+
+        for (let gridIndex = 0; gridIndex < 3; gridIndex++) {
+            for (let position = 0; position < 9; position++) {
+                // We can't put squares in locations that already exist.
+                if (grids[gridIndex][position] != null) {
+                    continue;
+                }
+
+                // Simulate putting a player's mark in this location.
+                grids[gridIndex][position] = player;
+
+                bestValue = Math.max(
+                    bestValue,
+                    minimax(player, false, alpha, beta, depth - 1)
+                );
+
+                alpha = Math.max(alpha, bestValue);
+
+                // Undo simulating putting a player's mark in this location.
+                grids[gridIndex][position] = null;
+
+                if (bestValue >= beta && options.alphaBetaPruning) {
+                    return bestValue;
+                }
+            }
+        }
+
+        return bestValue;
+    } else if (!max) {
+        // This is the player we're competing against. We need to consider what they can do to harm our chances the most.
+        let bestValue = +Infinity;
+
+        for (let gridIndex = 0; gridIndex < 3; gridIndex++) {
+            for (let position = 0; position < 9; position++) {
+                // We can't put squares in locations that already exist.
+                if (grids[gridIndex][position] != null) {
+                    continue;
+                }
+
+                // Simulate putting a the other player's mark in this location.
+                grids[gridIndex][position] = flipPlayer(player);
+
+                bestValue = Math.min(
+                    bestValue,
+                    minimax(player, true, alpha, beta, depth - 1)
+                );
+
+                beta = Math.min(beta, bestValue);
+
+                // Undo simulating putting a player's mark in this location.
+                grids[gridIndex][position] = null;
+
+                if (bestValue <= alpha && options.alphaBetaPruning) {
+                    return bestValue;
+                }
+            }
+        }
+
+        return bestValue;
+    } else {
+        console.error("got a player that wasn't the");
+    }
+}
+
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
+function bestMoveForPlayer(player, depth) {
+    let bestValue = -Infinity;
+    let bestMoves = [];
+
+    // Try the moves in a random order to see if this speeds up alpha-beta pruning.
+    let moves = [
+        [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8], [0, 9],
+        [1, 0], [1, 1], [1, 2], [1, 3], [1, 4], [1, 5], [1, 6], [1, 7], [1, 8], [1, 9],
+        [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [2, 5], [2, 6], [2, 7], [2, 8], [2, 9],
+    ]
+
+    shuffle(moves)
+
+    for (let gridIndex = 0; gridIndex < 3; gridIndex++) {
+        for (let position = 0; position < 9; position++) {
+            // We can't put squares in locations that already exist.
+            if (grids[gridIndex][position] != null) {
+                continue;
+            }
+
+            // Simulate putting a player's mark in this location.
+            grids[gridIndex][position] = player;
+
+            let score = minimax(player, false, -Infinity, Infinity, depth - 1);
+            console.log([gridIndex, position], score);
+            if (bestValue < score) {
+                bestValue = score;
+                bestMoves = [[gridIndex, position]];
+            } else if (bestValue == score) {
+                bestMoves.push([gridIndex, position]);
+            }
+
+            // Undo simulating putting a player's mark in this location.
+            grids[gridIndex][position] = null;
+
+        }
+    }
+
+    return bestMoves[0];
+}
+
 // processWinner check if a player has won, and then handle what needs to happen if a player has won.
 function processWinner() {
     winningPlayer = checkWinner();
@@ -200,12 +351,38 @@ function processWinner() {
     }
 
     for (let position of winningPlayer.slice(0, 3)) {
-        getSquareElemByPos(position[0], position[1]).style.background = "pink";
+        let color = winningPlayer[3] == "X" ? "#96CCFF" : "#FF725C"
+        getSquareElemByPos(position[0], position[1]).style.background = color;
     }
 
     winner = currentPlayer;
 
     return true
+}
+
+function makeMove(layerNum, i, ai = false) {
+    grids[layerNum][i] = currentPlayer;
+    renderGrid();
+    let wasWinner = processWinner();
+
+    if (!wasWinner) {
+        gridHistory.push({
+            "message": `${ai ? "Player (AI)" : "Player"} <span class="i">${currentPlayer}</span> went in location (${layerNum}, ${i}). <a class="link blue" href="javascript:void(0)" onclick="loadHistory(${gridHistory.length})">Jump here.</a>`,
+            "grid": [[...grids[0]], [...grids[1]], [...grids[2]]],
+            "toPlay": flipPlayer(currentPlayer)
+        })
+        currentPlayer = flipPlayer(currentPlayer);
+    } else {
+        gridHistory.push({
+            "message": `${ai ? "Player (AI)" : "Player"} <span class="i">${currentPlayer}</span> <i>wins</i> by going in location (${layerNum}, ${i})!`,
+            "grid": [[...grids[0]], [...grids[1]], [...grids[2]]],
+            "toPlay": flipPlayer(currentPlayer),
+            "winner": true,
+        })
+    }
+
+    renderHistory();
+    renderCurrentPlayer()
 }
 
 window.onload = function setup() {
@@ -239,28 +416,51 @@ window.onload = function setup() {
 
             let layerNum = parseInt(square.getAttribute("data-layer"))
             let i = parseInt(square.getAttribute("data-index"))
+            makeMove(layerNum, i)
 
-            grids[layerNum][i] = currentPlayer;
-            let wasWinner = processWinner();
 
-            if (!wasWinner) {
-                gridHistory.push({
-                    "message": `Player <span class="i">${currentPlayer}</span> went in location (${layerNum}, ${i}). <a class="link blue" href="javascript:void(0)" onclick="loadHistory(${gridHistory.length})">Jump here.</a>`,
-                    "grid": [[...grids[0]], [...grids[1]], [...grids[2]]],
-                    "toPlay": flipPlayer(currentPlayer)
-                })
-                currentPlayer = flipPlayer(currentPlayer);
-            } else {
-                gridHistory.push({
-                    "message": `Player <span class="i">${currentPlayer}</span> <i>wins</i> by going in location (${layerNum}, ${i})!`,
-                    "grid": [[...grids[0]], [...grids[1]], [...grids[2]]],
-                    "toPlay": flipPlayer(currentPlayer),
-                    "winner": true,
-                })
+            if (!options.automaticallyRespond || lock || winner != false) {
+                return
             }
 
-            renderHistory();
-            renderCurrentPlayer()
+            setTimeout(() => {
+                [layerNum, i] = bestMoveForPlayer(currentPlayer, options.depthLimit)
+                makeMove(layerNum, i, ai = true)
+            }, 20)
+
         })
     })
+
+    let sliderDepth = document.getElementById("slider-depth")
+    sliderDepth.value = 6
+
+    sliderDepth.oninput = e => {
+        options.depthLimit = parseInt(sliderDepth.value)
+        document.getElementById("val-current-depth").innerHTML = options.depthLimit
+    }
+
+    document.getElementById("option-automatically-respond").checked = true;
+    document.getElementById("option-automatically-respond").oninput = e => {
+        options.automaticallyRespond = document.getElementById("option-automatically-respond").checked
+    }
+
+    document.getElementById("option-alpha-beta-pruning").checked = true;
+    document.getElementById("option-alpha-beta-pruning").oninput = e => {
+        options.alphaBetaPruning = document.getElementById("option-alpha-beta-pruning").checked
+    }
+
+    document.getElementById("option-heatmap").checked = false;
+    document.getElementById("option-heatmap").oninput = e => {
+        options.heatmap = document.getElementById("option-heatmap").checked
+    }
+
+    document.getElementById("button-play-next").onclick = e => {
+        if (lock || winner != false) {
+            return
+        }
+
+        let [layerNum, i] = bestMoveForPlayer(currentPlayer, options.depthLimit)
+        makeMove(layerNum, i, ai = true)
+    }
+
 }
