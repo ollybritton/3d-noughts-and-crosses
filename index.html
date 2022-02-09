@@ -24,168 +24,9 @@
 
 <body>
     <div class="cf pa3 pa4-ns container helvetica">
-        <h1 class="mt0 f3 f2-m f1-l title fw1 baskerville">3D Noughts & Crosses</h1>
+        <h1 class="mt0 f2 f1-l title fw1 baskerville">3D Noughts & Crosses</h1>
 
-        <div class="fl pr2 w-100 w-50-ns">
-            <p class="mt0 lh-copy">
-                <a href="https://en.wikipedia.org/wiki/Tic-tac-toe" class="link blue">Noughts and
-                    Crosses</a>, or Tic-Tac-Toe, is the famous game about getting three \(X\)s or
-                \(O\)s in a
-                row. This website demonstrates a variant where you play in 3D, trying to get a line through a cube where
-                each grid represents a layer.
-            </p>
-
-            <p class="mt0 lh-copy">
-                By default, the AI is a bit stupid. That's because it becomes possible for the first player to force a
-                win if they take the center square. The AI will realise this if you put its depth limit to roughly 8, so
-                it becomes quite difficult to win after that point, unless you go first.
-            </p>
-
-            <p class="mt0 lh-copy">
-                The algorithm used for the AI is <a class="link blue"
-                    href="https://en.wikipedia.org/wiki/Minimax#Minimax_algorithm_with_alternate_moves">minimax</a> with
-                <a class="link blue" href="https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning">alpha-beta
-                    pruning</a>. This algorithm recursively considers all possible moves it could make and all possible
-                responses to
-                its moves so that it can pick one that it expects to maximise its chances of winning. Without alpha-beta
-                pruning, it becomes computationally intractable much faster than it would otherwise. Since there's 27
-                possible moves at the start, thinking ten moves ahead without any special tricks requires considering
-                \(27 \times 26
-                \times 25 \ldots \times 18 \times 17\) or \(520,431,047,136,000\) possibilities.
-            </p>
-
-            <p class="mt0 lh-copy">
-                If each possible game took \(1\text{ns}\) to consider, this technique means the algorithm
-                would
-                finish running in 6 days. Alpha-beta pruning means you can vastly cut down on the amount of
-                options you have to consider by "pruning" states that you know won't lead to anything as good as what
-                you've found so far. The number of states pruned is displayed in the information section.
-            </p>
-
-            <h3 class="mt2 lh-copy">Controls</h3>
-
-            <p class="mt0 lh-copy">
-                To begin playing, just click on any of the squares on the right-hand side, or scroll down if you're on
-                mobile. By default, the AI will automatically respond to your moves. To turn this off, toggle the
-                "Automatically respond to player moves" checkbox. You can also force the AI to make the next move for
-                the current player by clicking the "Play next move" button. "Analyse" will have the AI look for all
-                possible moves, but not make any and instead report the information finds in the "Information" section.
-            </p>
-
-            <p class="mt0 lh-copy">
-                The slider at the top controls how many <a class="link blue"
-                    href="https://en.wikipedia.org/wiki/Ply_(game_theory)">plys</a> the AI will look ahead. One "ply" is
-                one move by any
-                player, a term used to avoid the ambiguity that comes with just saying "moves". The default is 6 and is
-                reasonably easy to win against. Lowering the slider will make the AI worse but faster at making moves,
-                and increasing the slider will make the AI better but much, much slower. Each successive notch on the
-                slider corresponds to roughly a \(10 \times\) increase in waiting time.
-            </p>
-
-            <p class="mt0 lh-copy">
-                You can see a heatmap of what the AI thinks are good moves and bad moves by toggling the "Show a heatmap
-                of predicted wins/losses" checkbox. This won't have any affect until you're a few moves into the game,
-                as the AI can't see far ahead enough into the future to decide whether a mood is good or bad. Once it
-                does, it will color each box depending on if there's a big chance for \(X\) or a big chance for \(O\).
-            </p>
-
-            <div class="pa2 heatmap-demo">
-                <div class="heatmap-demo-row">
-                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.2)">
-                        <p>small \(X\)</p>
-                    </div>
-                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.3)"></div>
-                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.4)"></div>
-                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.5)"></div>
-                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.6)"></div>
-                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.7)"></div>
-                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.8)">
-                        <p>big \(X\)</p>
-                    </div>
-                </div>
-                <div class="heatmap-demo-row">
-                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.2)">
-                        <p>small \(O\)</p>
-                    </div>
-                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.3)"></div>
-                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.4)"></div>
-                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.5)"></div>
-                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.6)"></div>
-                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.7)"></div>
-                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.8)">
-                        <p>big \(O\)</p>
-                    </div>
-                </div>
-            </div>
-
-            <p class="mt0 lh-copy">
-                Finally, there is also the "Optimise for game length" option. This makes the AI try to avoid moves that
-                will bring the game to an end, to see how long it's possible to go without anybody winning, including
-                itself. It's interesting to watch it play against itself and see which player ends up making the move
-                that wins the game.
-            </p>
-
-            <h3 class="mt2 lh-copy">Other Variants</h3>
-
-            <p class="mt0 lh-copy">These are some other variants of noughts and crosses. This list comes from Wikipedia,
-                <a class="link blue"
-                    href="https://en.wikipedia.org/wiki/Tic-tac-toe_variants#Numerical_Tic-Tac-Toe">"Tic-tac-toe
-                    variants"</a>:
-            </p>
-
-            <ul class="mb3">
-                <li class="mb2">
-                    <a href="https://en.wikipedia.org/wiki/Tic-tac-toe_variants#Mis%C3%A8re_games"
-                        class="link purple">Misere tic-tac-toe</a>
-                    is where you try to avoid winning, trying to force your
-                    opponent to get three in a row before you do. You can always win or draw if you go first by playing
-                    in the middle square and then mirroring your opponent's moves.
-                </li>
-                <li class="mb2">
-                    <a href="https://en.wikipedia.org/wiki/Quantum_tic-tac-toe" class="link purple">Quantum
-                        tic-tac-toe</a> is a variant where moves are "quantum superpositions" of normal tic-tac-toe
-                    moves. It was invented as a way to explore the intuition behind quantum mechanics without any
-                    mathematics.
-                </li>
-                <li class="mb2">
-                    <a href="https://en.wikipedia.org/wiki/Number_Scrabble" class="link purple">Numerical
-                        tic-tac-toe/number scrabble</a> is a game mathematically equivalent to standard noughts and
-                    crosses where two
-                    players take turns naming numbers from 1 to 9, where you can't repeat numbers that have already been
-                    said. The first player who says any three numbers that sum to 15 wins. Because you can arrange the
-                    numbers on a 3 by 3 magic square, the game is "isomorphic" to tic-tac-toe.
-                </li>
-                <li class="mb2">
-                    <a href="https://en.wikipedia.org/wiki/Wild_tic-tac-toe" class="link purple">Wild tic-tac-toe</a>
-                    lets either player decide whether to use a \(X\) or a \(O\) on their turn.
-                    The first player to get any three in a row wins.
-                </li>
-                <li class="mb2">
-                    <a href="https://en.wikipedia.org/wiki/SOS_(game)" class="link purple">SOS</a> is a similar game
-                    played on any sized \(N \times N\) grid. Players can use either an "S" or an "O" on their turn and
-                    the aim is to get as many sequences of "SOS" horizontally, vertically or diagonally as they can
-                    before the grid is full.
-                </li>
-                <li class="mb2">
-                    <a href="https://en.wikipedia.org/wiki/Treblecross" class="link purple">Treblecross</a> looks like
-                    the
-                    least interesting variant you could imagine. It's like noughts and crosses, but you play in a
-                    \(1\times
-                    N\) grid and everyone is \(X\). The first one to get three in a row wins.
-                </li>
-            </ul>
-
-            <h3 class="mt3 lh-copy">Thanks!</h3>
-
-            <p class="mt0 lh-copy">I hope you enjoyed the game. If you want to see the source code, it's <a
-                    href="https://github.com/ollybritton/3d-noughts-and-crosses" class="link blue">available here on
-                    GitHub</a>. If you want to see some of my other projects, check out <a
-                    href="https://projects.ollybritton.com" class="link blue">my website</a>. There's the old version of
-                this project <a href="/_old">located here</a>, and a demonstration of what it could actually look like
-                in 3D <a href="3d/">here</a>.</p>
-        </div>
-
-        <div class="fl pl2 w-100 w-50-ns">
+        <div class="fr pl2 w-100 w-50-ns">
             <div class="f6 mb2 gray i">Change depth to search state-space (min 1, max 10, current <span
                     id="val-current-depth">6</span>)</div>
             <input class="w-50 mb3" type="range" min="1" max="10" value="6" id="slider-depth" />
@@ -310,13 +151,173 @@
                         to
                         start.</a></li>
             </div>
-
-
         </div>
 
+        <div class="fl pr2 w-100 w-50-ns">
+            <hr class="dn-ns mt4 mb4" />
+            <h2 class="dn-ns">Information</h2>
+            <p class="mt0 lh-copy">
+                <a href="https://en.wikipedia.org/wiki/Tic-tac-toe" class="link blue">Noughts and
+                    Crosses</a>, or Tic-Tac-Toe, is the famous game about getting three \(X\)s or
+                \(O\)s in a
+                row. This website demonstrates a variant where you play in 3D, trying to get a line through a cube where
+                each grid represents a layer.
+            </p>
 
+            <p class="mt0 lh-copy">
+                By default, the AI is a bit stupid. That's because it becomes possible for the first player to force a
+                win if they take the center square. The AI will realise this if you put its depth limit to roughly 8, so
+                it becomes quite difficult to win after that point, unless you go first.
+            </p>
+
+            <p class="mt0 lh-copy">
+                The algorithm used for the AI is <a class="link blue"
+                    href="https://en.wikipedia.org/wiki/Minimax#Minimax_algorithm_with_alternate_moves">minimax</a> with
+                <a class="link blue" href="https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning">alpha-beta
+                    pruning</a>. This algorithm recursively considers all possible moves it could make and all possible
+                responses to
+                its moves so that it can pick one that it expects to maximise its chances of winning. Without alpha-beta
+                pruning, it becomes computationally intractable much faster than it would otherwise. Since there's 27
+                possible moves at the start, thinking ten moves ahead without any special tricks requires considering
+                \(27 \times 26
+                \times 25 \ldots \times 18 \times 17\) or \(520,431,047,136,000\) possibilities.
+            </p>
+
+            <p class="mt0 lh-copy">
+                If each possible game took \(1\text{ns}\) to consider, this technique means the algorithm
+                would
+                finish running in 6 days. Alpha-beta pruning means you can vastly cut down on the amount of
+                options you have to consider by "pruning" states that you know won't lead to anything as good as what
+                you've found so far. The number of states pruned is displayed in the information section.
+            </p>
+
+            <h3 class="mt3 mb2 lh-copy">Controls</h3>
+
+            <p class="mt0 lh-copy">
+                To begin playing, just click on any of the squares on the right-hand side, or scroll down if you're on
+                mobile. By default, the AI will automatically respond to your moves. To turn this off, toggle the
+                "Automatically respond to player moves" checkbox. You can also force the AI to make the next move for
+                the current player by clicking the "Play next move" button. "Analyse" will have the AI look for all
+                possible moves, but not make any and instead report the information finds in the "Information" section.
+            </p>
+
+            <p class="mt0 lh-copy">
+                The slider at the top controls how many <a class="link blue"
+                    href="https://en.wikipedia.org/wiki/Ply_(game_theory)">plys</a> the AI will look ahead. One "ply" is
+                one move by any
+                player, a term used to avoid the ambiguity that comes with just saying "moves". The default is 6 and is
+                reasonably easy to win against. Lowering the slider will make the AI worse but faster at making moves,
+                and increasing the slider will make the AI better but much, much slower. Each successive notch on the
+                slider corresponds to roughly a \(10 \times\) increase in waiting time.
+            </p>
+
+            <p class="mt0 lh-copy">
+                You can see a heatmap of what the AI thinks are good moves and bad moves by toggling the "Show a heatmap
+                of predicted wins/losses" checkbox. This won't have any affect until you're a few moves into the game,
+                as the AI can't see far ahead enough into the future to decide whether a mood is good or bad. Once it
+                does, it will color each box depending on if there's a big chance for \(X\) or a big chance for \(O\).
+            </p>
+
+            <div class="pa2 heatmap-demo mb3">
+                <div class="heatmap-demo-row">
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.2)">
+                        <p class="f6">small \(X\)</p>
+                    </div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.3)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.4)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.5)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.6)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.7)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.8)">
+                        <p class="f6">big \(X\)</p>
+                    </div>
+                </div>
+                <div class="heatmap-demo-row">
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.2)">
+                        <p class="f6">small \(O\)</p>
+                    </div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.3)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.4)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.5)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.6)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.7)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.8)">
+                        <p class="f6">big \(O\)</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="mt0 lh-copy">
+                Finally, there is also the "Optimise for game length" option. This makes the AI try to avoid moves that
+                will bring the game to an end, to see how long it's possible to go without anybody winning, including
+                itself. It's interesting to watch it play against itself and see which player ends up making the move
+                that wins the game.
+            </p>
+
+            <h3 class="mt3 mb2 lh-copy">Other Variants</h3>
+
+            <p class="mt0 lh-copy">These are some other variants of noughts and crosses. This list comes from Wikipedia,
+                <a class="link blue"
+                    href="https://en.wikipedia.org/wiki/Tic-tac-toe_variants#Numerical_Tic-Tac-Toe">"Tic-tac-toe
+                    variants"</a>:
+            </p>
+
+            <ul class="mb3">
+                <li class="mb2">
+                    <a href="https://en.wikipedia.org/wiki/Tic-tac-toe_variants#Mis%C3%A8re_games"
+                        class="link blue">Misere
+                        tic-tac-toe</a>
+                    is where you try to avoid winning, force your
+                    opponent to get three in a row before you do. You can always win or draw if you go first by playing
+                    in the middle square and then mirroring your opponent's moves.
+                </li>
+                <li class="mb2">
+                    <a href="https://en.wikipedia.org/wiki/Quantum_tic-tac-toe" class="link blue">Quantum
+                        tic-tac-toe</a> is a variant where moves are "quantum superpositions" of normal tic-tac-toe
+                    moves. Moves can be in two places at once until a cycle is formed, where the system is then
+                    "observed" and the game is forced into one definite state. It was invented as a way to explore the
+                    intuition behind quantum mechanics without any
+                    mathematics.
+                </li>
+                <li class="mb2">
+                    <a href="https://en.wikipedia.org/wiki/Number_Scrabble" class="link blue">Numerical
+                        tic-tac-toe/number scrabble</a> is a game mathematically equivalent to standard noughts and
+                    crosses where two
+                    players take turns naming numbers from 1 to 9, where you can't repeat numbers that have already been
+                    said. The first player who says any three numbers that sum to 15 wins. Because you can arrange the
+                    numbers on a 3 by 3 magic square, the game is isomorphic to tic-tac-toe.
+                </li>
+                <li class="mb2">
+                    <a href="https://en.wikipedia.org/wiki/Wild_tic-tac-toe" class="link blue">Wild tic-tac-toe</a>
+                    lets either player decide whether to use a \(X\) or a \(O\) on their turn.
+                    The first player to get any three in a row wins.
+                </li>
+                <li class="mb2">
+                    <a href="https://en.wikipedia.org/wiki/SOS_(game)" class="link blue">SOS</a> is a similar game
+                    played on any sized \(N \times N\) grid. Players can use either an "S" or an "O" on their turn and
+                    the aim is to get as many sequences of "SOS" horizontally, vertically or diagonally as they can
+                    before the grid is full.
+                </li>
+                <li class="mb2">
+                    <a href="https://en.wikipedia.org/wiki/Treblecross" class="link blue">Treblecross</a> looks like
+                    the
+                    least interesting variant you could imagine. It's like noughts and crosses, but you play in a
+                    \(1\times
+                    N\) grid and everyone is \(X\). The first one to get three in a row wins.
+                </li>
+            </ul>
+
+            <h3 class="mt3 mb2 lh-copy">Thanks!</h3>
+
+            <p class="mt0 lh-copy">I hope you enjoyed the game. If you want to see the source code, it's <a
+                    href="https://github.com/ollybritton/3d-noughts-and-crosses" class="link blue">available here on
+                    GitHub</a>. If you want to see some of my other projects, check out <a
+                    href="https://projects.ollybritton.com" class="link blue">my website</a>. There's the old version of
+                this project <a class="link blue" href="/_old">located here</a>, and a demonstration of what it could
+                actually look like
+                in 3D <a class="link blue" href="3d/">here</a>.</p>
+        </div>
     </div>
-
 
 
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>

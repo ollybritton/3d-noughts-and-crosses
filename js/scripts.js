@@ -123,6 +123,10 @@ function resetGrid() {
         }
     }
 
+    document.getElementById('info-evaluation-time').innerHTML = "N/A"
+    document.getElementById('info-nodes-searched').innerHTML = "N/A"
+    document.getElementById('info-nodes-pruned').innerHTML = "N/A"
+
     renderHistory();
     renderCurrentPlayer();
     renderGrid();
@@ -367,7 +371,6 @@ function bestMoveForPlayer(player, depth) {
 
     shuffle(moves)
 
-
     for (let [gridIndex, position] of moves) {
         // We can't put squares in locations that already exist.
         if (grids[gridIndex][position] != null) {
@@ -381,7 +384,7 @@ function bestMoveForPlayer(player, depth) {
         let score = minimax(player, false, -Infinity, Infinity, depth - 1);
         getSquareElemByPos(gridIndex, position).setAttribute("data-score", score)
 
-        console.log([gridIndex, position], score);
+        console.log("Move", [gridIndex, position], "had score", score);
         if (bestValue < score) {
             bestValue = score;
             bestMoves = [[gridIndex, position]];
@@ -391,7 +394,6 @@ function bestMoveForPlayer(player, depth) {
 
         // Undo simulating putting a player's mark in this location.
         grids[gridIndex][position] = null;
-
     }
 
     document.getElementById("info-evaluation-time").innerHTML = `${Math.floor((new Date() - evaluationStartTime)) / 1000}s`
@@ -432,7 +434,7 @@ function analyse() {
         let score = minimax(player, false, -Infinity, Infinity, options.depthLimit - 1);
         getSquareElemByPos(gridIndex, position).setAttribute("data-score", score)
 
-        console.log([gridIndex, position], score);
+        console.log("Move", [gridIndex, position], "had score", score);
         if (bestValue < score) {
             bestValue = score;
             bestMoves = [[gridIndex, position]];
