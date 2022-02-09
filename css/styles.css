@@ -24,3 +24,24 @@ th {
 .hovering {
     color: #ddd;
 }
+
+
+.heatmap-demo {
+    width: 100%;
+}
+
+.heatmap-demo-row {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.heatmap-demo-box {
+    width: 75px;
+    height: 75px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

@@ -36,26 +36,93 @@
             </p>
 
             <p class="mt0 lh-copy">
-                While fun at first, it quickly becomes clear that it's a lot easier for a player to win if they take the
-                center square. The AI will realise this if you put its depth limit to roughly 8, so it becomes very
-                difficult to win afterwards if it gets to play first.
+                By default, the AI is a bit stupid. That's because it becomes possible for the first player to force a
+                win if they take the center square. The AI will realise this if you put its depth limit to roughly 8, so
+                it becomes quite difficult to win after that point, unless you go first.
             </p>
 
             <p class="mt0 lh-copy">
                 The algorithm used for the AI is <a class="link blue"
                     href="https://en.wikipedia.org/wiki/Minimax#Minimax_algorithm_with_alternate_moves">minimax</a> with
                 <a class="link blue" href="https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning">alpha-beta
-                    pruning</a>. This algorithm considers all possible moves it could make and all possible responses to
-                its moves so that it can pick one that it expects to maximise its chances of winning. Since there's 27
-                possible moves at the start, for thinking ten moves ahead it would need to consider \(27 \times 26
-                \times 25 \ldots \times 18 \times 17\) moves, or \(520,431,047,136,000\) combinations.
+                    pruning</a>. This algorithm recursively considers all possible moves it could make and all possible
+                responses to
+                its moves so that it can pick one that it expects to maximise its chances of winning. Without alpha-beta
+                pruning, it becomes computationally intractable much faster than it would otherwise. Since there's 27
+                possible moves at the start, thinking ten moves ahead without any special tricks requires considering
+                \(27 \times 26
+                \times 25 \ldots \times 18 \times 17\) or \(520,431,047,136,000\) possibilities.
             </p>
 
             <p class="mt0 lh-copy">
-                If each possible game took \(1\text{ns}\) to consider, this technique should mean the algorithm would
-                finish running in 6 days. Alpha-beta pruning is a technique that means you can cut down on the amount of
-                options you have to consider by "pruning" states that you know won't lead to anything as good as the
-                alternatives. The number of states pruned is displayed in the information section.
+                If each possible game took \(1\text{ns}\) to consider, this technique means the algorithm
+                would
+                finish running in 6 days. Alpha-beta pruning means you can vastly cut down on the amount of
+                options you have to consider by "pruning" states that you know won't lead to anything as good as what
+                you've found so far. The number of states pruned is displayed in the information section.
+            </p>
+
+            <h3 class="mt2 lh-copy">Controls</h3>
+
+            <p class="mt0 lh-copy">
+                To begin playing, just click on any of the squares on the right-hand side, or scroll down if you're on
+                mobile. By default, the AI will automatically respond to your moves. To turn this off, toggle the
+                "Automatically respond to player moves" checkbox. You can also force the AI to make the next move for
+                the current player by clicking the "Play next move" button. "Analyse" will have the AI look for all
+                possible moves, but not make any and instead report the information finds in the "Information" section.
+            </p>
+
+            <p class="mt0 lh-copy">
+                The slider at the top controls how many <a class="link blue"
+                    href="https://en.wikipedia.org/wiki/Ply_(game_theory)">plys</a> the AI will look ahead. One "ply" is
+                one move by any
+                player, a term used to avoid the ambiguity that comes with just saying "moves". The default is 6 and is
+                reasonably easy to win against. Lowering the slider will make the AI worse but faster at making moves,
+                and increasing the slider will make the AI better but much, much slower. Each successive notch on the
+                slider corresponds to roughly a \(10 \times\) increase in waiting time.
+            </p>
+
+            <p class="mt0 lh-copy">
+                You can see a heatmap of what the AI thinks are good moves and bad moves by toggling the "Show a heatmap
+                of predicted wins/losses" checkbox. This won't have any affect until you're a few moves into the game,
+                as the AI can't see far ahead enough into the future to decide whether a mood is good or bad. Once it
+                does, it will color each box depending on if there's a big chance for \(X\) or a big chance for \(O\).
+            </p>
+
+            <div class="pa2 heatmap-demo">
+                <div class="heatmap-demo-row">
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.2)">
+                        <p>small \(X\)</p>
+                    </div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.3)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.4)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.5)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.6)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.7)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(25, 169, 116, 0.8)">
+                        <p>big \(X\)</p>
+                    </div>
+                </div>
+                <div class="heatmap-demo-row">
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.2)">
+                        <p>small \(O\)</p>
+                    </div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.3)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.4)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.5)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.6)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.7)"></div>
+                    <div class="heatmap-demo-box" style="background: rgba(255, 163, 215, 0.8)">
+                        <p>big \(O\)</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="mt0 lh-copy">
+                Finally, there is also the "Optimise for game length" option. This makes the AI try to avoid moves that
+                will bring the game to an end, to see how long it's possible to go without anybody winning, including
+                itself. It's interesting to watch it play against itself and see which player ends up making the move
+                that wins the game.
             </p>
 
             <h3 class="mt2 lh-copy">Other Variants</h3>
@@ -66,7 +133,7 @@
                     variants"</a>:
             </p>
 
-            <ul>
+            <ul class="mb3">
                 <li class="mb2">
                     <a href="https://en.wikipedia.org/wiki/Tic-tac-toe_variants#Mis%C3%A8re_games"
                         class="link purple">Misere tic-tac-toe</a>
@@ -106,8 +173,16 @@
                     \(1\times
                     N\) grid and everyone is \(X\). The first one to get three in a row wins.
                 </li>
-
             </ul>
+
+            <h3 class="mt3 lh-copy">Thanks!</h3>
+
+            <p class="mt0 lh-copy">I hope you enjoyed the game. If you want to see the source code, it's <a
+                    href="https://github.com/ollybritton/3d-noughts-and-crosses" class="link blue">available here on
+                    GitHub</a>. If you want to see some of my other projects, check out <a
+                    href="https://projects.ollybritton.com" class="link blue">my website</a>. There's the old version of
+                this project <a href="/_old">located here</a>, and a demonstration of what it could actually look like
+                in 3D <a href="3d/">here</a>.</p>
         </div>
 
         <div class="fl pl2 w-100 w-50-ns">
@@ -124,9 +199,13 @@
                 <input type="checkbox" id="option-alpha-beta-pruning" checked>
                 <label for="option-alpha-beta-pruning" class="lh-copy">Use alpha-beta pruning</label>
             </div>
-            <div class="mb3">
+            <div>
                 <input type="checkbox" id="option-heatmap">
                 <label for="option-heatmap" class="lh-copy">Show a heatmap of predicted wins/losses</label>
+            </div>
+            <div class="mb3">
+                <input type="checkbox" id="option-game-length">
+                <label for="option-game-length" class="lh-copy">Optimise for game length</label>
             </div>
 
             <div class="f6 mb2 gray i">Program controls</div>
@@ -134,6 +213,7 @@
                 <button class="mr2 mb2 pointer" id="button-play-next">Play next move</button>
                 <button class="mr2 mb2 pointer" id="button-undo-last" onclick="undoLast()">Undo last move</button>
                 <button class="mr2 mb2 pointer" id="button-reset-grid" onclick="resetGrid()">Reset grid</button>
+                <button class="mr2 mb2 pointer" id="button-analyse" onclick="analyse()">Analyse</button>
             </div>
 
             <div class="flex flex-column justify-center bg-near-white baskerville fw-1 mb4">
@@ -141,21 +221,21 @@
                     <table>
                         <thead>
                             <tr>
-                                <th id="square-0-0" class="square" data-layer="0" data-index="0"></th>
-                                <th id="square-0-1" class="square" data-layer="0" data-index="1"></th>
-                                <th id="square-0-2" class="square" data-layer="0" data-index="2"></th>
+                                <th id="square-0-0" class="square" data-score="0" data-layer="0" data-index="0"></th>
+                                <th id="square-0-1" class="square" data-score="0" data-layer="0" data-index="1"></th>
+                                <th id="square-0-2" class="square" data-score="0" data-layer="0" data-index="2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td id="square-0-3" class="square" data-layer="0" data-index="3"></td>
-                                <td id="square-0-4" class="square" data-layer="0" data-index="4"></td>
-                                <td id="square-0-5" class="square" data-layer="0" data-index="5"></td>
+                                <td id="square-0-3" class="square" data-score="0" data-layer="0" data-index="3"></td>
+                                <td id="square-0-4" class="square" data-score="0" data-layer="0" data-index="4"></td>
+                                <td id="square-0-5" class="square" data-score="0" data-layer="0" data-index="5"></td>
                             </tr>
                             <tr>
-                                <td id="square-0-6" class="square" data-layer="0" data-index="6"></td>
-                                <td id="square-0-7" class="square" data-layer="0" data-index="7"></td>
-                                <td id="square-0-8" class="square" data-layer="0" data-index="8"></td>
+                                <td id="square-0-6" class="square" data-score="0" data-layer="0" data-index="6"></td>
+                                <td id="square-0-7" class="square" data-score="0" data-layer="0" data-index="7"></td>
+                                <td id="square-0-8" class="square" data-score="0" data-layer="0" data-index="8"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -167,21 +247,21 @@
                     <table>
                         <thead>
                             <tr>
-                                <th class="square" id="square-1-0" data-layer="1" data-index="0"></th>
-                                <th class="square" id="square-1-1" data-layer="1" data-index="1"></th>
-                                <th class="square" id="square-1-2" data-layer="1" data-index="2"></th>
+                                <th class="square" id="square-1-0" data-score="0" data-layer="1" data-index="0"></th>
+                                <th class="square" id="square-1-1" data-score="0" data-layer="1" data-index="1"></th>
+                                <th class="square" id="square-1-2" data-score="0" data-layer="1" data-index="2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="square" id="square-1-3" data-layer="1" data-index="3"></td>
-                                <td class="square" id="square-1-4" data-layer="1" data-index="4"></td>
-                                <td class="square" id="square-1-5" data-layer="1" data-index="5"></td>
+                                <td class="square" id="square-1-3" data-score="0" data-layer="1" data-index="3"></td>
+                                <td class="square" id="square-1-4" data-score="0" data-layer="1" data-index="4"></td>
+                                <td class="square" id="square-1-5" data-score="0" data-layer="1" data-index="5"></td>
                             </tr>
                             <tr>
-                                <td class="square" id="square-1-6" data-layer="1" data-index="6"></td>
-                                <td class="square" id="square-1-7" data-layer="1" data-index="7"></td>
-                                <td class="square" id="square-1-8" data-layer="1" data-index="8"></td>
+                                <td class="square" id="square-1-6" data-score="0" data-layer="1" data-index="6"></td>
+                                <td class="square" id="square-1-7" data-score="0" data-layer="1" data-index="7"></td>
+                                <td class="square" id="square-1-8" data-score="0" data-layer="1" data-index="8"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -193,21 +273,21 @@
                     <table>
                         <thead>
                             <tr>
-                                <th class="square" id="square-2-0" data-layer="2" data-index="0"></th>
-                                <th class="square" id="square-2-1" data-layer="2" data-index="1"></th>
-                                <th class="square" id="square-2-2" data-layer="2" data-index="2"></th>
+                                <th class="square" id="square-2-0" data-score="0" data-layer="2" data-index="0"></th>
+                                <th class="square" id="square-2-1" data-score="0" data-layer="2" data-index="1"></th>
+                                <th class="square" id="square-2-2" data-score="0" data-layer="2" data-index="2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="square" id="square-2-3" data-layer="2" data-index="3"></td>
-                                <td class="square" id="square-2-4" data-layer="2" data-index="4"></td>
-                                <td class="square" id="square-2-5" data-layer="2" data-index="5"></td>
+                                <td class="square" id="square-2-3" data-score="0" data-layer="2" data-index="3"></td>
+                                <td class="square" id="square-2-4" data-score="0" data-layer="2" data-index="4"></td>
+                                <td class="square" id="square-2-5" data-score="0" data-layer="2" data-index="5"></td>
                             </tr>
                             <tr>
-                                <td class="square" id="square-2-6" data-layer="2" data-index="6"></td>
-                                <td class="square" id="square-2-7" data-layer="2" data-index="7"></td>
-                                <td class="square" id="square-2-8" data-layer="2" data-index="8"></td>
+                                <td class="square" id="square-2-6" data-score="0" data-layer="2" data-index="6"></td>
+                                <td class="square" id="square-2-7" data-score="0" data-layer="2" data-index="7"></td>
+                                <td class="square" id="square-2-8" data-score="0" data-layer="2" data-index="8"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -216,7 +296,11 @@
 
             <div class="f6 gray i">Information</div>
             <div class="mb4 ma3">
-                <li class="code">Current Player: <span id="info-current-player">X</kbd></li>
+                <li class="code">Current Player: <span class="i" id="info-current-player">X</kbd></li>
+                <li class="code">Evaluation Time: <span class="i" id="info-evaluation-time">N/A</kbd></li>
+                <li class="code">Nodes Searched: <span class="i" id="info-nodes-searched">N/A</kbd></li>
+                <li class="code">Nodes Pruned: <span class="i" id="info-nodes-pruned">N/A</kbd></li>
+                <li class="code">Depth Limit: <span class="i" id="info-depth-limit">6</kbd></li>
             </div>
 
             <div class="f6 gray i">History</div>
