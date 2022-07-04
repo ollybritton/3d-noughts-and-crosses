@@ -191,6 +191,14 @@
                 you've found so far. The number of states pruned is displayed in the information section.
             </p>
 
+            <p class="mt0 lh-copy">
+                A
+                <a href="https://en.wikipedia.org/wiki/Transposition_table" class="link blue">transposition table</a>
+                is also used to speed up the program.
+                This is effectively a hashmap that stores the results of previous searches, trading off memory usage for
+                increased speed.
+            </p>
+
             <h3 class="mt3 mb2 lh-copy">Controls</h3>
 
             <p class="mt0 lh-copy">
@@ -205,7 +213,8 @@
                 The slider at the top controls how many <a class="link blue"
                     href="https://en.wikipedia.org/wiki/Ply_(game_theory)">plys</a> the AI will look ahead. One "ply" is
                 one move by any
-                player, a term used to avoid the ambiguity that comes with just saying "moves". The default is 6 and is
+                player, a term used to avoid the ambiguity that comes with just saying "moves", which could mean either
+                one action by one of the players, or a complete turn. The default is 6 and is
                 reasonably easy to win against. Lowering the slider will make the AI worse but faster at making moves,
                 and increasing the slider will make the AI better but much, much slower. Each successive notch on the
                 slider corresponds to roughly a \(10 \times\) increase in waiting time.
@@ -250,8 +259,11 @@
             <p class="mt0 lh-copy">
                 Finally, there is also the "Optimise for game length" option. This makes the AI try to avoid moves that
                 will bring the game to an end, to see how long it's possible to go without anybody winning, including
-                itself. If you click "Play next move" over and over, it will play against itself and you can see which player ends up making the move
-                that wins the game. It turns out that drawing is actually impossible, see <a href="https://brain.ollybritton.com/posts/blog/can-you-ever-draw-in-3d-noughts-and-crosses" class="link blue">this blog post</a> for why.
+                itself. If you click "Play next move" over and over, it will play against itself and you can see which
+                player ends up making the move
+                that wins the game. It turns out that drawing is actually impossible, see <a
+                    href="https://brain.ollybritton.com/posts/blog/can-you-ever-draw-in-3d-noughts-and-crosses"
+                    class="link blue">this blog post</a> for why.
             </p>
 
             <h3 class="mt3 mb2 lh-copy">Other Variants</h3>
@@ -313,9 +325,9 @@
                     href="https://github.com/ollybritton/3d-noughts-and-crosses" class="link blue">available here on
                     GitHub</a>. If you want to see some of my other projects, check out <a
                     href="https://projects.ollybritton.com" class="link blue">my website</a>. There's the old version of
-                this project <a class="link blue" href="/_old">located here</a>, and a demonstration of what it could
+                this project <a class="link blue" href="/old/">located here</a>, and a demonstration of what it could
                 actually look like
-                in 3D <a class="link blue" href="3d/">here</a>.</p>
+                in 3D <a class="link blue" href="/3d/">here</a>.</p>
         </div>
     </div>
 
